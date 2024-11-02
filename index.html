@@ -12,14 +12,14 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Realflation - 실시간 물가 정보 대시보드</title>
-    <meta name="description" content="Realflation은 소비자물가지수, 근원물가지수, 생활물가지수 정보를 매일 업데이트하기 위해 최선을 다하고 있습니다. 매월 10일 첫 업데이트를 시작으로 최신 물가 동향을 확인하세요.">
-    <meta name="keywords" content="물가, 인플레이션, 소비자물가지수, 근원물가지수, 생활물가지수, 경제 지표, 실시간 데이터">
+    <title>Realflation - 경제 지표 분석</title>
+    <meta name="description" content="실질 경제 성장과 인플레이션에 대한 최신 데이터 및 분석">
+    <meta name="keywords" content="실질 GDP, 경제 지표, 인플레이션, 경제 분석, 분기별 경제">
     <meta name="author" content="Realflation Team">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://realflation.ai">
-    <meta property="og:title" content="Realflation - 실시간 물가 정보 대시보드">
-    <meta property="og:description" content="소비자물가지수, 근원물가지수, 생활물가지수의 실시간 업데이트를 제공하는 대시보드입니다.">
+    <meta property="og:title" content="Realflation - 경제 지표 분석">
+    <meta property="og:description" content="실질 경제 성장과 인플레이션에 대한 최신 데이터 및 분석">
     <meta property="og:url" content="https://realflation.ai">
     <meta property="og:type" content="website">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2864871203185521"
@@ -85,6 +85,11 @@
             font-size: 0.9em;
             color: #666;
         }
+        .comment {
+            text-align: center;
+            font-size: 0.8em;
+            color: #888;
+        }        
         @media (max-width: 600px) {
             body {
                 padding: 10px;
@@ -97,45 +102,91 @@
 </head>
 <body>
     <div class="container">
-        <h1>Realflation</h1>
-        <div class="update-time">Last Updated: <span id="updateTime">2024-11-01 08:00</span></div>
-        <div id="monthlyData"></div>
-        <div class="update-info">첫번째 업데이트는 매달 10일경</div>
+        <div id="updateTime" class="update-time">
+            Last Updated: [2024-11-02 08:00]
+        </div>
+        <section>
+            <h1>Realflation</h1>
+            <div class="comment">통계청 &gt; 보도자료 &gt; 물가 · 가계 &gt; 소비자물가조사</div>
+            <div id="realflation-data"></div>
+        </section>
+        <section>
+            <h1>GDPToday</h1>
+            <div class="comment">한국은행 ECOS &gt; 국민계정 &gt; 국민소득통계(2020년 기준년) &gt; 생산 및 지출 GDP, GDP 디플레이터 &gt; 국내총생산에 대한 지줄 > 국내총생산에 대한 지출(계절조정, 실질, 분기)</div>
+            <div id="gdp-today-data"></div>
+        </section>
         <div class="contact">Contact: <a href="mailto:tomorrowskospi@gmail.com">tomorrowskospi@gmail.com</a></div>
     </div>
 
     <script>
-        function generateData() {
+        // null 값을 'NA'로 변환하거나 소수점 둘째 자리까지 표시하는 함수
+        function formatValue(value) {
+            return value === null ? 'NA' : value.toFixed(2) + '%';
+        }
+
+        function generateReflationData() {
             const months = [{
-                date: new Date(2024, 9, 1),
+                date: new Date(2024, 10, 1),
                 consumerPriceIndex: {
                     yearOverYear: {
                         actual: null,
-                        expected: 1.2714
+                        expected: 1.923897
                     },
                     monthOverMonth: {
                         actual: null,
-                        expected: 0.0524
+                        expected: 0.063052
                     }
                 },
                 corePriceIndex: {
                     yearOverYear: {
                         actual: null,
-                        expected: 1.4656
+                        expected: 1.502168
                     },
                     monthOverMonth: {
                         actual: null,
-                        expected: 0.0363
+                        expected: 0.034837
                     }
                 },
                 livingNecessitiesPriceIndex: {
                     yearOverYear: {
                         actual: null,
-                        expected: 1.0843
+                        expected: 1.911059
                     },
                     monthOverMonth: {
                         actual: null,
-                        expected: 0.0773
+                        expected: 0.074701
+                    }
+                }
+            }, {
+                date: new Date(2024, 9, 1),
+                consumerPriceIndex: {
+                    yearOverYear: {
+                        actual: null,
+                        expected: 1.329106
+                    },
+                    monthOverMonth: {
+                        actual: null,
+                        expected: 0.109445
+                    }
+                },
+                corePriceIndex: {
+                    yearOverYear: {
+                        actual: null,
+                        expected: 1.402993
+                    },
+                    monthOverMonth: {
+                        actual: null,
+                        expected: -0.025471
+                    }
+                },
+                livingNecessitiesPriceIndex: {
+                    yearOverYear: {
+                        actual: null,
+                        expected: 0.906668
+                    },
+                    monthOverMonth: {
+                        actual: null,
+                        expected: -0.098533
                     }
                 }
             }, {
@@ -207,29 +258,24 @@
             return months;
         }
 
-        // null 값을 'NA'로 변환하거나 소수점 둘째 자리까지 표시하는 함수
-        function formatValue(value) {
-            return value === null ? 'NA' : value.toFixed(2) + '%';
-        }
-
         // 데이터를 HTML로 렌더링
-        function renderData(data) {
-            const container = document.getElementById('monthlyData');
+        function renderRealflationData(data) {
+            const container = document.getElementById('realflation-data');
             data.forEach((month, index) => {
                 const monthEl = document.createElement('div');
                 monthEl.className = 'month-data';
                 monthEl.innerHTML = `
                     <h2>${month.date.getFullYear()}년 ${month.date.getMonth() + 1}월</h2>
-                    ${renderIndexData('소비자물가지수', month.consumerPriceIndex, index === 0)}
-                    ${renderIndexData('근원물가지수', month.corePriceIndex, index === 0)}
-                    ${renderIndexData('생활물가지수', month.livingNecessitiesPriceIndex, index === 0)}
+                    ${renderRealflationRow('소비자물가지수', month.consumerPriceIndex, month.consumerPriceIndex.yearOverYear.actual == null)}
+                    ${renderRealflationRow('근원물가지수', month.corePriceIndex, month.corePriceIndex.yearOverYear.actual == null)}
+                    ${renderRealflationRow('생활물가지수', month.livingNecessitiesPriceIndex, month.livingNecessitiesPriceIndex.yearOverYear.actual == null)}
                 `;
                 container.appendChild(monthEl);
             });
         }
 
         // 각 지수 데이터 렌더링 함수
-        function renderIndexData(indexName, indexData, isLatest) {
+        function renderRealflationRow(indexName, indexData, isLatest) {
             return `
                 <div class="index-data">
                     <span class="index-name">${indexName}</span>
@@ -246,10 +292,98 @@
             `;
         }
 
+        function generateGdpTodayData() {
+            const data = [{
+                q: "2024Q4",
+                real: {
+                    yearOverYear: {
+                        actual: null,
+                        expected: -0.784684
+                    },
+                    quarterOverQuarter: {
+                        actual: null,
+                        expected: -0.376397
+                    }
+                },
+             }, {
+                q: "2024Q3",
+                real: {
+                    yearOverYear: {
+                        actual: null,
+                        expected: 0.043322
+                    },
+                    quarterOverQuarter: {
+                        actual: null,
+                        expected: -1.463681
+                    }
+                },                    
+            }, {
+                q: "2024Q2",
+                real: {
+                    yearOverYear: {
+                        actual: 2.294239,
+                        expected: null
+                    },
+                    quarterOverQuarter: {
+                        actual: -0.227646,
+                        expected: null
+                    }
+                },                    
+            }, {
+                q: "2024Q1",
+                real: {
+                    yearOverYear: {
+                        actual: 3.093038,
+                        expected: null
+                    },
+                    quarterOverQuarter: {
+                        actual: 1.300112,
+                        expected: null
+                    }
+                },                    
+            }];
+
+            return data;
+        }
+
+        // 데이터를 HTML로 렌더링
+        function renderGdpTdayData(data) {
+            const container = document.getElementById('gdp-today-data');
+            data.forEach((quater, index) => {
+                const quaterEl = document.createElement('div');
+                quaterEl.className = 'month-data';
+                quaterEl.innerHTML = `
+                    <h2>${quater.q}</h2>
+                    ${renderGdpTodayRow(quater, '실질GDP성장률', quater.real.yearOverYear.actual == null)}
+                `;
+                container.appendChild(quaterEl);
+            });
+        }
+
+        // 각 지수 데이터 렌더링 함수
+        function renderGdpTodayRow(quaterData, indexName, isLatest) {
+            return `
+                <div class="index-data">
+                    <span class="rate">
+                        ${isLatest ? `
+                            예상 YoY: ${formatValue(quaterData.real.yearOverYear.expected)}<br>
+                            예상 QoQ: ${formatValue(quaterData.real.quarterOverQuarter.expected)}
+                        ` : `
+                            YoY: ${formatValue(quaterData.real.yearOverYear.actual)} (예상: ${formatValue(quaterData.real.yearOverYear.expected)})<br>
+                            QoQ: ${formatValue(quaterData.real.quarterOverQuarter.actual)} (예상: ${formatValue(quaterData.real.quarterOverQuarter.expected)})
+                        `}
+                    </span>
+                </div>
+            `;
+        }
+
         // 페이지 로드 시 실행
         window.onload = function() {
-            const data = generateData();
-            renderData(data);            
+            const realflationData = generateReflationData();
+            const gdpTodayData = generateGdpTodayData();
+
+            renderRealflationData(realflationData);
+            renderGdpTdayData(gdpTodayData);          
         };
     </script>
 </body>
