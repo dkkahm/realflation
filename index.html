@@ -103,7 +103,7 @@
 <body>
     <div class="container">
         <div id="updateTime" class="update-time">
-            Last Updated: [2024-11-05 11:00]
+            Last Updated: [2024-11-06 09:00]
         </div>
         <section>
             <h1>Realflation</h1>
@@ -130,62 +130,62 @@
                 consumerPriceIndex: {
                     yearOverYear: {
                         actual: null,
-                        expected: 1.922462
+                        expected: 1.802487
                     },
                     monthOverMonth: {
                         actual: null,
-                        expected: 0.061643
+                        expected: 0.018348
                     }
                 },
                 corePriceIndex: {
                     yearOverYear: {
                         actual: null,
-                        expected: 1.499551
+                        expected: 1.526703
                     },
                     monthOverMonth: {
                         actual: null,
-                        expected: 0.032258
+                        expected: -0.222829
                     }
                 },
                 livingNecessitiesPriceIndex: {
                     yearOverYear: {
                         actual: null,
-                        expected: 1.910564
+                        expected: 2.019971
                     },
                     monthOverMonth: {
                         actual: null,
-                        expected: 0.074215
+                        expected: 0.031836
                     }
                 }
             }, {
                 date: new Date(2024, 9, 1),
                 consumerPriceIndex: {
                     yearOverYear: {
-                        actual: null,
+                        actual: 1.253642,
                         expected: 1.329106
                     },
                     monthOverMonth: {
-                        actual: null,
+                        actual: 0.034889,
                         expected: 0.109445
                     }
                 },
                 corePriceIndex: {
                     yearOverYear: {
-                        actual: null,
+                        actual: 1.689432,
                         expected: 1.402993
                     },
                     monthOverMonth: {
-                        actual: null,
+                        actual: 0.256933,
                         expected: -0.025471
                     }
                 },
                 livingNecessitiesPriceIndex: {
                     yearOverYear: {
-                        actual: null,
+                        actual: 1.197038,
                         expected: 0.906668
                     },
                     monthOverMonth: {
-                        actual: null,
+                        actual: 0.051086,
                         expected: -0.098533
                     }
                 }
@@ -298,23 +298,27 @@
                 real: {
                     yearOverYear: {
                         actual: null,
-                        expected: -0.789784
+                        expected: -0.790376,
+                        actualType: null,
                     },
                     quarterOverQuarter: {
                         actual: null,
-                        expected: -0.381519
+                        expected: -0.382113,
+                        actualType: null,
                     }
                 },
              }, {
                 q: "2024Q3",
                 real: {
                     yearOverYear: {
-                        actual: null,
-                        expected: 0.043322
+                        actual: 1.6655,
+                        expected: 0.043322,
+                        actualType: 0,
                     },
                     quarterOverQuarter: {
-                        actual: null,
-                        expected: -1.463681
+                        actual: 0.1341,
+                        expected: -1.463681,
+                        actualType: 0,
                     }
                 },                    
             }, {
@@ -322,11 +326,13 @@
                 real: {
                     yearOverYear: {
                         actual: 2.294239,
-                        expected: null
+                        expected: null,
+                        actualType: 2
                     },
                     quarterOverQuarter: {
                         actual: -0.227646,
-                        expected: null
+                        expected: null,
+                        actualType: 2
                     }
                 },                    
             }, {
@@ -334,11 +340,13 @@
                 real: {
                     yearOverYear: {
                         actual: 3.093038,
-                        expected: null
+                        expected: null,
+                        actualType: 2
                     },
                     quarterOverQuarter: {
                         actual: 1.300112,
-                        expected: null
+                        expected: null,
+                        actualType: 2
                     }
                 },                    
             }];
@@ -351,9 +359,15 @@
             const container = document.getElementById('gdp-today-data');
             data.forEach((quater, index) => {
                 const quaterEl = document.createElement('div');
+                let qName = quater.q;
+                if(quater.real.yearOverYear.actualType == 0) {
+                    qName += " (속)";
+                } else if(quater.real.yearOverYear.actualType == 1) {
+                    qName += " (잠)";
+                }
                 quaterEl.className = 'month-data';
                 quaterEl.innerHTML = `
-                    <h2>${quater.q}</h2>
+                    <h2>${qName}</h2>
                     ${renderGdpTodayRow(quater, '실질GDP성장률', quater.real.yearOverYear.actual == null)}
                 `;
                 container.appendChild(quaterEl);
