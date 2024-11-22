@@ -297,12 +297,18 @@
                     dataToRender[index] = data;
                 })
 
-                createCpiChart()
-                createCoreCpiChart()
-                createLivingCpiChart()
+                createCpiChart();
+                createCoreCpiChart();
+                createLivingCpiChart();
 
-                createRealGdpChart()
-                createNominalGdpChart()
+                createRealGdpChart();
+                createNominalGdpChart();
+
+                window.addEventListener('resize', createCpiChart);
+                window.addEventListener('resize', createCoreCpiChart);
+                window.addEventListener('resize', createLivingCpiChart);
+                window.addEventListener('resize', createRealGdpChart);
+                window.addEventListener('resize', createNominalGdpChart);
 
             } catch (error) {
                 throw error;
