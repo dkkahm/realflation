@@ -96,7 +96,10 @@
             width: 80%;
             margin-top: 20px;
             margin-bottom: 10px;
-        }        
+        }
+        .control-panel {
+            margin-bottom: 20px;
+        }
         @media (max-width: 600px) {
             body {
                 padding: 10px;
@@ -112,6 +115,16 @@
         <div id="updateTime" class="update-time">
             Last Updated: [2024-11-29 08:00]
         </div>
+        <div class="control-panel">
+            <label for="period-select">기간 선택:</label>
+            <select id="period-select">
+                <option value="30">최근 30일</option>
+                <option value="60">최근 60일</option>
+                <option value="90">최근 90일</option>
+                <option value="180">최근 180일</option>
+                <option value="360">최근 360일</option>
+            </select>
+        </div>        
         <section>
             <h1>Realflation</h1>
             <div class="comment">통계청 &gt; 보도자료 &gt; 물가 · 가계 &gt; 소비자물가조사</div>
@@ -143,7 +156,23 @@
     </div>
 
     <script>
+        const fullData = [null, null, null, null, null];
+
+        let currentPeriod = 30;
         const dataToRender = [null, null, null, null, null];
+
+        function updateDataToRender(periodDays) {
+            const endIndex = fullData[0][0].length - 1;
+            const startIndex = Math.max(0, endIndex - periodDays);
+            console.log("updateDataToRender, " + periodDays + "," + startIndex + "," + endIndex);
+
+            for (let i = 0; i < 5; ++ i) {
+                dataToRender[i] = [null, null, null, null, null, null, null];
+                for(let j = 0; j < 7; ++ j) {
+                    dataToRender[i][j] = fullData[i][j].slice(startIndex);
+                }
+            }
+        }
 
         function formatDate(timestamp) {
             let date = new Date(0);
@@ -251,25 +280,20 @@
             window.chart = new uPlot(opts, data, chartDiv);
         }
 
-        function createCpiChart() {
+        function drawCharts(periodDays) {
+            // console.log("in drawCharts(), periodDays = " + periodDays);
+
             createChart(dataToRender[0], "소비자물가지수", "cpi-chart-container", "cpi-chart");
+            createChart(dataToRender[1], "근원물가지수", "core-cpi-chart-container", "core-cpi-chart");
+            createChart(dataToRender[2], "생활물가지수", "living-cpi-chart-container", "living-cpi-chart");
+            createChart(dataToRender[3], "", "real-gdp-chart-container", "real-gdp-chart");
+            createChart(dataToRender[4], "", "nominal-gdp-chart-container", "nominal-gdp-chart");
         }
 
-        function createCoreCpiChart() {
-            createChart(dataToRender[1], "근원물가지수", "core-cpi-chart-container", "core-cpi-chart");
-        }        
-        
-        function createLivingCpiChart() {
-            createChart(dataToRender[2], "생활물가지수", "living-cpi-chart-container", "living-cpi-chart");
-        }    
-        
-        function createRealGdpChart() {
-            createChart(dataToRender[3], "", "real-gdp-chart-container", "real-gdp-chart");
-        }            
+        function drawChartsWithCurrentPeriod() {
+            drawCharts(currentPeriod);
+        }
 
-        function createNominalGdpChart() {
-            createChart(dataToRender[4], "", "nominal-gdp-chart-container", "nominal-gdp-chart");
-        }            
 
         async function fetchData() {
             const endpoints = [
@@ -294,22 +318,20 @@
                 );
 
                 responses.forEach((data, index) => {
-                    dataToRender[index] = data;
+                    fullData[index] = data;
                 })
 
-                createCpiChart();
-                createCoreCpiChart();
-                createLivingCpiChart();
+                // createCpiChart();
+                // createCoreCpiChart();
+                // createLivingCpiChart();
 
-                createRealGdpChart();
-                createNominalGdpChart();
+                // createRealGdpChart();
+                // createNominalGdpChart();
 
-                window.addEventListener('resize', createCpiChart);
-                window.addEventListener('resize', createCoreCpiChart);
-                window.addEventListener('resize', createLivingCpiChart);
-                window.addEventListener('resize', createRealGdpChart);
-                window.addEventListener('resize', createNominalGdpChart);
+                updateDataToRender(currentPeriod);
+                drawChartsWithCurrentPeriod()
 
+                window.addEventListener('resize', drawChartsWithCurrentPeriod);
             } catch (error) {
                 throw error;
             } finally {
@@ -320,7 +342,15 @@
         // window.onload = function() {
 
         // };
+        // document.addEventListener('DOMContentLoaded', fetchData);
+
         document.addEventListener('DOMContentLoaded', fetchData);
+        document.getElementById('period-select').addEventListener('change', (e) => {
+            currentPeriod = parseInt(e.target.value);
+            updateDataToRender(currentPeriod);
+            drawCharts(currentPeriod);
+        });
+
     </script>
 </body>
 </html>
